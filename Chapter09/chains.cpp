@@ -18,6 +18,15 @@ struct pcout : public stringstream {
     }
 };
 
+// create(...), concat(...), and twice(...) are our 3 workhorse
+// functions that we want to parallelize.
+// In order to be really simple for the sake of being just examples, they
+// just do simple string operations and return the result.
+// These functions do also simulate large amounts of work by sleeping for
+// several seconds. This way it makes sense to let them run in parallel.
+// (Of course if a thread sleeps for N seconds, it does not occupy a whole
+// core for that time - it is just suspended giving space for other threads)
+
 static string create(const char *s)
 {
     pcout{} << "3s CREATE " << quoted(s) << '\n';
