@@ -26,10 +26,27 @@ public:
 
 namespace std {
 
+// By overloading this traits structure we help STL algorithms
+// accessing type definitions for our custom iterator.
+// Another way is to put the following type definitions into
+// the iterator class.
+
 template <>
 struct iterator_traits<num_iterator> {
     using iterator_category = std::forward_iterator_tag;
-    using value_type = int;
+    using value_type        = int;
+
+    // This type can be used to tell the difference between two
+    // iterators. This of course only makes sense if we define
+    // the difference operation for our iterator (and operator+ etc.)
+    using difference_type   = int;
+
+    // What is the correct pointer type to the individual objects
+    // we are iterating over?
+    using pointer           = int*;
+
+    // Same as before, but for references.
+    using reference         = int&;
 };
 
 }
