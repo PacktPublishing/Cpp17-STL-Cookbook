@@ -43,6 +43,15 @@ multimap<size_t, string> get_sentence_stats(const string &content)
 
 int main()
 {
+    // Note that using istreambuf_iterator may be faster for reading
+    // the whole file in one step.
+    //
+    // For reading large files it is also better to know
+    // their size in advance in order to reserve the space in memory.
+    // This way the buffer does not need to grow which brings a lot of
+    // reallocations. See also Chapter10/dupe_compress.cpp, where
+    // we do it like this.
+
     cin.unsetf(ios::skipws);
     string content {istream_iterator<char>{cin}, {}};
 
