@@ -12,12 +12,22 @@ pair<It, It> gather(It first, It last, It gather_pos, F predicate)
             stable_partition(gather_pos,  last,        predicate)};
 }
 
-template <typename It, typename F>
-void gather_sort(It first, It last, It gather_pos, F comp_func)
+template <typename It>
+void gather_sort(It first, It last, It gather_pos)
 {
-    auto inv_comp_func ([&](const auto &...ps) { return !comp_func(ps...); });
-    stable_sort(first, gather_pos, inv_comp_func);
-    stable_sort(gather_pos,  last, comp_func);
+    // Errata: The original book version let the user provide a
+    // comparison function.
+    // That comparison function was used in one of the sort calls
+    // and a negated version was used in the other.
+    // Unfortunately, the negated version of the comparison function
+    // does not follow the strict weak ordering requirement from the
+    // standard, which means that that version can lead to
+    // undefined behavior.
+    // The current version uses less and greater, which fix this.
+
+    using T = typename std::iterator_traits<It>::value_type;
+    stable_sort(first, gather_pos, greater<T>{});
+    stable_sort(gather_pos,  last, less<T>{});
 }
 
 int main()
@@ -42,6 +52,6 @@ int main()
     cout << a << '\n';
 
     string b {"_9_2_4_7_3_8_1_6_5_0_"};
-    gather_sort(begin(b), end(b), begin(b) + b.size() / 2, less<char>{});
+    gather_sort(begin(b), end(b), begin(b) + b.size() / 2);
     cout << b << '\n';
 }
