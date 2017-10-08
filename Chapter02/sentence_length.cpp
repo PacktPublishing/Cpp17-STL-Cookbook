@@ -13,7 +13,7 @@ string filter_ws(const string &s)
     if (a == string::npos) {
         return {};
     }
-    return s.substr(a, b);
+    return s.substr(a, b - a + 1);
 }
 
 multimap<size_t, string> get_sentence_stats(const string &content)
