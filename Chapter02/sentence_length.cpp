@@ -34,6 +34,12 @@ multimap<size_t, string> get_sentence_stats(const string &content)
             ret.emplace(make_pair(words, move(s)));
         }
 
+        if (it2 == end_it) {
+            // Need to get out here, because the next line would set it1
+            // _past_ end_it.
+            break;
+        }
+
         it1 = next(it2, 1);
         it2 = find(it1, end_it, '.');
     }
