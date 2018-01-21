@@ -1,6 +1,7 @@
 #include <iostream>
 
-static auto multicall (auto ...functions)
+template <typename ... Ts>
+static auto multicall (Ts ...functions)
 {
     return [=](auto x) {
         (void)std::initializer_list<int>{
@@ -9,7 +10,8 @@ static auto multicall (auto ...functions)
     };
 }
 
-static auto for_each (auto f, auto ...xs) {
+template <typename F, typename ... Ts>
+static auto for_each (F f, Ts ...xs) {
     (void)std::initializer_list<int>{
         ((void)f(xs), 0)...
     };

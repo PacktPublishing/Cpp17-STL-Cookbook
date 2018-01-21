@@ -4,15 +4,16 @@
 #include <vector>
 #include <functional>
 
-
-static auto consumer (auto &container)
+template <typename C>
+static auto consumer (C &container)
 {
     return [&] (auto value) {
         container.push_back(value);
     };
 }
 
-static void print (const auto &c)
+template <typename C>
+static void print (const C &c)
 {
     for (auto i : c) {
         std::cout << i << ", ";
