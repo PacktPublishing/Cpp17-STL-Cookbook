@@ -4,12 +4,12 @@
 using namespace std;
 
 class format_guard {
-    ostream& _os;
-    ios::fmtflags _f;
+    ostream& os;
+    ios::fmtflags f;
 
 public:
-    explicit format_guard(ostream& os = cout) : _os(os), _f(os.flags()) {}
-    ~format_guard() { _os.flags(_f); }
+    explicit format_guard(ostream& os = cout) : os(os), f(os.flags()) {}
+    ~format_guard() { os.flags(f); }
 };
 
 
