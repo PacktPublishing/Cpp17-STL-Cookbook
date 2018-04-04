@@ -4,11 +4,14 @@
 using namespace std;
 
 class format_guard {
-    decltype(cout.flags()) f {cout.flags()};
+    ostream& os;
+    ios::fmtflags f;
 
 public:
-    ~format_guard() { cout.flags(f); }
+    explicit format_guard(ostream &guarded_stream = cout) : os(guarded_stream), f(os.flags()) {}
+    ~format_guard() { os.flags(f); }
 };
+
 
 template <typename T>
 struct scientific_type {
@@ -19,7 +22,7 @@ struct scientific_type {
 
 template <typename T>
 ostream& operator<<(ostream &os, const scientific_type<T> &w) {
-    format_guard _;
+    format_guard _{os};
     os << scientific << uppercase << showpos;
     return os << w.value;
 }
