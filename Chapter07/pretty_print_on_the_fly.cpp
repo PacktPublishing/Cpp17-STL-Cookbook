@@ -8,7 +8,7 @@ class format_guard {
     ios::fmtflags f;
 
 public:
-    explicit format_guard(ostream& os = cout) : os(os), f(os.flags()) {}
+    explicit format_guard(ostream &guarded_stream = cout) : os(guarded_stream), f(os.flags()) {}
     ~format_guard() { os.flags(f); }
 };
 
