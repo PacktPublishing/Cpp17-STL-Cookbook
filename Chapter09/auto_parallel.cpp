@@ -2,7 +2,6 @@
 #include <vector>
 #include <random>
 #include <algorithm>
-#include <algorith>
 #include <execution>
 
 using namespace std;
