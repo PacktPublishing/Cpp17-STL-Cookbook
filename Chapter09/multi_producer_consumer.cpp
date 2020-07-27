@@ -29,38 +29,37 @@ condition_variable go_consume;
 
 static void producer(size_t id, size_t items, size_t stock)
 {
-    for(size_t i = 0; i < items; ++i) {
-        unique_lock<mutex> lock(q_mutex);
-        go_produce.wait(lock, [&] { return q.size() < stock; });
+    for (size_t i = 0; i < items; ++i) {
+        {
+            unique_lock<mutex> lock(q_mutex);
+            go_produce.wait(lock, [&] { return q.size() < stock; });
 
-        q.push(id * 100 + i);
-
-        pcout{} << "   Producer " << id << " --> item "
-                << setw(3) << q.back() << '\n';
-
+            q.push(id * 100 + i);
+            pcout{} << "   Producer " << id << " --> item "
+                    << setw(3) << q.back() << '\n';
+        }
         go_consume.notify_all();
         this_thread::sleep_for(90ms);
     }
-
     pcout{} << "EXIT: Producer " << id << '\n';
 }
 
 static void consumer(size_t id)
 {
     while (!production_stopped || !q.empty()) {
-        unique_lock<mutex> lock(q_mutex);
-
-        if (go_consume.wait_for(lock, 1s, [] { return !q.empty(); })) {
-            pcout{} << "                  item "
-                    << setw(3) << q.front() << " --> Consumer "
-                    << id << '\n';
-            q.pop();
-            go_produce.notify_all();
-            this_thread::sleep_for(130ms);
+        {
+            unique_lock<mutex> lock(q_mutex);
+            if (go_consume.wait_for(lock, 1s, []{ return !q.empty(); })) {
+                pcout{} << "        item "
+                        << setw(3) << q.front() << " --> Consumer "
+                        << id << '\n';
+                q.pop();
+                go_produce.notify_all();
+            }
         }
+        this_thread::sleep_for(130ms);
     }
-
-    pcout{} << "EXIT: Consumer " << id << '\n';
+    pcout{} << "EXIT: Consumer " << id << "\n";
 }
 
 int main()
