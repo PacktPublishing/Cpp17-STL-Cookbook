@@ -1,5 +1,5 @@
 
-CXXFLAGS = -std=c++1z -Wall 
+CXXFLAGS = -std=c++1z -Wall -pthread
 
 SOURCES=$(wildcard *.cpp)
 BINARIES=$(patsubst %.cpp,bin/%,$(SOURCES))
